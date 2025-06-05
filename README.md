@@ -83,4 +83,11 @@ This project is an AI-powered platform designed to automate content generation a
 2.  Access the frontend application through the URL provided by Vite (e.g., `http://localhost:5173`) or the deployed Firebase Hosting URL.
 3.  Log in or sign up (if authentication is implemented).
 4.  Use the platform features to generate content, connect social accounts, and manage posts.
+
+## Workflow Videos:
+
+https://github.com/user-attachments/assets/fe79305a-7967-4dfe-ad26-571b21c6532d
+
+https://github.com/user-attachments/assets/8ddfcea4-b447-4efa-8bce-7f7b1efc4de5
+
  ![logo2](https://github.com/user-attachments/assets/714396b8-2767-4d48-8353-b7eb3b638251)
