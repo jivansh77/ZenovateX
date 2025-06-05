@@ -209,7 +209,7 @@ const Home = () => {
       {/* Pricing Section Summary */}
       <section className="py-20 bg-base-200">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to dive into your documents?</h2>
+          <h2 className="text-4xl font-bold mb-4">Ready to transform your marketing strategy?</h2>
           <p className="text-xl mb-4 text-sm">Get started for free today</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {['Basic', 'Pro', 'Enterprise'].map((plan) => (

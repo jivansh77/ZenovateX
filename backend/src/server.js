@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const emailRoutes = require('./routes/email.routes');
 const contentRoutes = require('./routes/content.routes');
+const seoRoutes = require('./routes/seo.routes');
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 // Routes
 app.use('/api/email', emailRoutes);
 app.use('/api/content', contentRoutes);
+app.use('/api/seo', seoRoutes);
 
 const PORT = process.env.PORT || 5000;
 

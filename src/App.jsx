@@ -22,10 +22,11 @@ import ContentGenerator from './pages/ContentGenerator'
 import getTweetsData from './TwitterClient'
 import ExitIntentPopup from './pages/ExitIntentPopup';
 import CustomizationForm from './pages/CustomizationForm';
+import SEOAudit from './pages/SEOAudit';
 
 const AppContent = () => {
   const location = useLocation();
-  const showSidebar = ['/dashboard', '/audience-insights', '/content-studio', '/campaign-builder', '/analytics', '/finetune', '/campaign-builder/template'].includes(location.pathname);
+  const showSidebar = ['/dashboard', '/audience-insights', '/content-studio', '/campaign-builder', '/analytics', '/finetune', '/campaign-builder/template', '/seo-audit'].includes(location.pathname);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-base-100 to-base-200">
@@ -43,6 +44,7 @@ const AppContent = () => {
             <Route path="/campaign-builder" element={<CampaignBuilder />} />
             <Route path="/campaign-builder/template" element={<ContentGenerator />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/seo-audit" element={<SEOAudit />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />

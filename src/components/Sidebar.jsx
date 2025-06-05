@@ -7,7 +7,8 @@ import {
   RiGroupLine, 
   RiPencilRulerLine,
   RiRocketLine,
-  RiBarChartBoxLine
+  RiBarChartBoxLine,
+  RiSearchLine
 } from 'react-icons/ri';
 
 export default function Sidebar() {
@@ -20,6 +21,7 @@ export default function Sidebar() {
     { name: 'Content Studio', href: '/content-studio', icon: RiPencilRulerLine },
     { name: 'Campaign Builder', href: '/campaign-builder', icon: RiRocketLine },
     { name: 'Analytics', href: '/analytics', icon: RiBarChartBoxLine },
+    { name: 'SEO Audit', href: '/seo-audit', icon: RiSearchLine },
   ];
 
   return (
