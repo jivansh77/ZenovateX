@@ -23,6 +23,7 @@ import getTweetsData from './TwitterClient'
 import ExitIntentPopup from './pages/ExitIntentPopup';
 import CustomizationForm from './pages/CustomizationForm';
 import SEOAudit from './pages/SEOAudit';
+import ReachbeeCompetitorAnalysis from './pages/ReachbeeCompetitorAnalysis';
 
 const AppContent = () => {
   const location = useLocation();
@@ -53,6 +54,7 @@ const AppContent = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/features" element={<Features />} />
             <Route path="/finetune" element={<FineTunePage />} />
+            <Route path="/competitor" element={<ReachbeeCompetitorAnalysis/>} />
           </Routes>
         </main>
       </div>
