@@ -9,6 +9,7 @@ This project is an AI-powered platform designed to automate content generation a
 *   **AI Content Generation:** Utilizes state-of-the-art generative AI models (Google Gemini, Stable Diffusion via `diffusers`, and others via `transformers`) to create text and image-based content automatically.
 *   **Multi-Platform Integration:** Connects with social media platforms like Twitter (with potential for others like Facebook, etc.) to manage posts and campaigns.
 *   **Content Scheduling & Management:** Tools to schedule posts, manage generated content, and track performance (using Chart.js for visualization).
+*   **SEO Audit Tool:** AI-powered SEO Audit Tool that analyzes any website in one click and provides personalized, actionable fixes to boost search engine visibility.
 *   **User Authentication:** Secure user login and management (via Firebase Authentication).
 *   **API Endpoints:** Provides APIs for interacting with the backend services (built with FastAPI/Django and Node.js/Express).
 
