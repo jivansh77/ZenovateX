@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Basic container styling */
+.translate-container {
+  position: relative;
+}
+
+/* Hide Google branding and default elements */
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  margin: 0 !important;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Hide default Google elements */
+.VIpgJd-ZVi9od-l4eHX-hSRGPd,
+.goog-te-banner-frame,
+.goog-te-gadget span {
+  display: none !important;
+}
+
+/* Prevent page shifting */
+body {
+  top: 0 !important;
+}
+
+/* Control dropdown visibility */
+.google-translate-dropdown {
+  display: none;
+}
+
+.show-translate {
+  display: block !important;
+}

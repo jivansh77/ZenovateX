@@ -1,0 +1,189 @@
+{
+  "id": "audit_1749160521508",
+  "url": "https://natya-ai.vercel.app/",
+  "status": "completed",
+  "progress": 100,
+  "currentStep": "Audit completed!",
+  "results": {
+    "overview": {
+      "score": 61,
+      "totalIssues": 1,
+      "criticalIssues": 1,
+      "warnings": 0,
+      "suggestions": 0,
+      "lastAudited": "2025-06-05T21:55:23.876Z"
+    },
+    "technical": {
+      "score": 80,
+      "issues": [
+        {
+          "type": "critical",
+          "title": "Missing Meta Description",
+          "description": "Your page is missing a meta description tag",
+          "impact": "High",
+          "fix": "Add a meta description tag between 150-160 characters",
+          "example": "<meta name=\"description\" content=\"Your compelling page description here\">"
+        }
+      ]
+    },
+    "performance": {
+      "score": 100,
+      "metrics": {
+        "pageSpeed": "1.5",
+        "mobileSpeed": "2.0",
+        "firstContentfulPaint": "0.9s",
+        "largestContentfulPaint": "1.2s",
+        "cumulativeLayoutShift": "0.00"
+      },
+      "opportunities": [
+        "Reduce server response time",
+        "Optimize images",
+        "Minify CSS and JavaScript",
+        "Convert images to WebP format",
+        "Minify and compress CSS/JS files"
+      ],
+      "analysis": {
+        "totalImages": 1,
+        "imagesWithoutAlt": 0,
+        "largeImages": 1,
+        "estimatedPageSize": "29 KB"
+      }
+    },
+    "content": {
+      "score": 15,
+      "analysis": {
+        "titleTag": {
+          "present": true,
+          "length": 7,
+          "optimal": false,
+          "suggestion": "Extend title to 30-60 characters for better SEO"
+        },
+        "headings": {
+          "h1Count": 1,
+          "h2Count": 5,
+          "structure": "good",
+          "issues": []
+        },
+        "keywordDensity": {
+          "primary": 3.7,
+          "optimal": false,
+          "suggestion": "Reduce keyword density to avoid keyword stuffing",
+          "primaryKeyword": "indian"
+        },
+        "wordCount": 137,
+        "readability": "Needs improvement",
+        "contentStructure": {
+          "paragraphs": 12,
+          "lists": 1,
+          "links": 10,
+          "images": 1
+        }
+      }
+    },
+    "keywords": {
+      "score": 50,
+      "primary": "dance",
+      "density": 4.4,
+      "opportunities": [
+        "indian",
+        "classical",
+        "complete8",
+        "days"
+      ],
+      "competitors": [
+        {
+          "keyword": "dance",
+          "difficulty": "Low",
+          "volume": 33360
+        },
+        {
+          "keyword": "indian",
+          "difficulty": "Low",
+          "volume": 7339
+        },
+        {
+          "keyword": "classical",
+          "difficulty": "High",
+          "volume": 32708
+        }
+      ],
+      "keywordAnalysis": {
+        "totalWords": 114,
+        "uniqueWords": 93,
+        "topKeywords": [
+          {
+            "keyword": "dance",
+            "count": 5,
+            "density": "4.4"
+          },
+          {
+            "keyword": "indian",
+            "count": 4,
+            "density": "3.5"
+          },
+          {
+            "keyword": "classical",
+            "count": 4,
+            "density": "3.5"
+          },
+          {
+            "keyword": "complete8",
+            "count": 3,
+            "density": "2.6"
+          },
+          {
+            "keyword": "days",
+            "count": 3,
+            "density": "2.6"
+          }
+        ]
+      }
+    },
+    "recommendations": [
+      {
+        "priority": "High",
+        "category": "Technical SEO",
+        "title": "Fix Critical Technical Issues",
+        "description": "Address 1 critical technical SEO issues found during the audit.",
+        "impact": "Will improve search engine crawlability and indexing",
+        "effort": "Low",
+        "steps": [
+          "Review all critical issues in the Technical SEO section",
+          "Implement meta description and title tag fixes first",
+          "Validate changes using browser developer tools",
+          "Test with Google Search Console"
+        ]
+      },
+      {
+        "priority": "Medium",
+        "category": "Performance",
+        "title": "Improve Page Performance",
+        "description": "Current performance score is 100/100, which can be improved.",
+        "impact": "Will improve user experience and search rankings",
+        "effort": "Medium",
+        "steps": [
+          "Optimize and compress images",
+          "Minify CSS and JavaScript files",
+          "Enable browser caching",
+          "Consider using a Content Delivery Network (CDN)"
+        ]
+      },
+      {
+        "priority": "Low",
+        "category": "Content",
+        "title": "Enhance Content Quality",
+        "description": "Content analysis shows room for improvement with 137 words.",
+        "impact": "May improve rankings for target keywords",
+        "effort": "Low",
+        "steps": [
+          "Expand content to at least 500 words if relevant",
+          "Improve heading structure (H1, H2, H3)",
+          "Add relevant keywords naturally",
+          "Include internal and external links"
+        ]
+      }
+    ]
+  },
+  "startedAt": "2025-06-05T21:55:21.508Z",
+  "completedAt": "2025-06-05T21:55:23.876Z"
+}
