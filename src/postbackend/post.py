@@ -18,10 +18,11 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Twitter API credentials
-API_KEY = "5q8CrLdKKYkpXfroQmo2cHaET"
-API_SECRET = "5tZu3q4T60sRGSTD6kfdXKLyo9iRtE1mMhOt0gH5yk7C2SP0Na"
-ACCESS_TOKEN = "1880122259378962432-EcSUVQmc0MbSC4VGqZKKj0Z5ARTCZ0"
-ACCESS_TOKEN_SECRET = "PqKAQJ7j501GaaANFgw4lIa1tXg4Zca1PDdkm53dLX5bt"
+API_KEY = os.getenv('API_KEY')
+API_SECRET = os.getenv('API_SECRET')
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+BEARER_TOKEN = os.getenv('BEARER_TOKEN')  # Add Bearer token for v2 API
 
 # Configure upload folder
 UPLOAD_FOLDER = 'temp_uploads'
@@ -90,8 +91,9 @@ def post_tweet_with_image(text, image_path):
                 
             return {"success": False, "error": f"Authentication failed: {error_message}"}
         
-        # Create Tweepy v2 client
+        # Create Tweepy v2 client with Bearer token
         client = tweepy.Client(
+            bearer_token=BEARER_TOKEN,
             consumer_key=API_KEY, 
             consumer_secret=API_SECRET,
             access_token=ACCESS_TOKEN, 
@@ -297,6 +299,195 @@ def tweet_with_local_image():
         logger.error(f"Server error in tweet_with_local_image: {str(e)}")
         return jsonify({
             "message": f"Server error: {str(e)}"
+        }), 500
+
+@app.route('/api/twitter/fetch-analytics', methods=['GET'])
+def fetch_twitter_analytics():
+    """Fetch real Twitter analytics using Twitter API"""
+    try:
+        # Set up Twitter authentication
+        auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+        api = tweepy.API(auth)
+        
+        # Create Tweepy v2 client with Bearer token
+        client = tweepy.Client(
+            bearer_token=BEARER_TOKEN,
+            consumer_key=API_KEY, 
+            consumer_secret=API_SECRET,
+            access_token=ACCESS_TOKEN, 
+            access_token_secret=ACCESS_TOKEN_SECRET,
+            wait_on_rate_limit=True
+        )
+        
+        # Verify credentials and get user info
+        try:
+            user_info = api.verify_credentials()
+            logger.debug(f"Authenticated user: {user_info.screen_name}")
+        except tweepy.TweepyException as e:
+            return jsonify({"error": f"Authentication failed: {str(e)}"}), 401
+        
+        # Get user's recent tweets (up to 100)
+        try:
+            # Get user's own tweets using v2 API
+            user_id = user_info.id
+            tweets_response = client.get_users_tweets(
+                id=user_id,
+                max_results=100,
+                tweet_fields=['created_at', 'public_metrics', 'attachments'],
+                expansions=['attachments.media_keys'],
+                media_fields=['url', 'preview_image_url']
+            )
+            
+            if not tweets_response.data:
+                return jsonify({
+                    "profile": {
+                        "username": user_info.screen_name,
+                        "totalTweets": user_info.statuses_count,
+                        "followers": user_info.followers_count,
+                        "following": user_info.friends_count
+                    },
+                    "metrics": {
+                        "tweets": 0,
+                        "likes": 0,
+                        "retweets": 0,
+                        "comments": 0,
+                        "followers": user_info.followers_count,
+                        "engagementRate": "0%"
+                    },
+                    "tweets": [],
+                    "bestPerformingTweet": None
+                }), 200
+            
+            # Process tweets and calculate metrics
+            tweets_data = []
+            total_likes = 0
+            total_retweets = 0
+            total_replies = 0
+            best_tweet = None
+            max_engagement = 0
+            
+            # Get media data if available
+            media_dict = {}
+            if tweets_response.includes and 'media' in tweets_response.includes:
+                for media in tweets_response.includes['media']:
+                    media_dict[media.media_key] = media
+            
+            for tweet in tweets_response.data:
+                metrics = tweet.public_metrics
+                likes = metrics['like_count']
+                retweets = metrics['retweet_count']
+                replies = metrics['reply_count']
+                
+                total_likes += likes
+                total_retweets += retweets
+                total_replies += replies
+                
+                # Get image URL if tweet has media
+                image_url = None
+                if hasattr(tweet, 'attachments') and tweet.attachments:
+                    media_keys = tweet.attachments.get('media_keys', [])
+                    for media_key in media_keys:
+                        if media_key in media_dict:
+                            media = media_dict[media_key]
+                            if media.type == 'photo':
+                                image_url = media.url
+                                break
+                            elif media.type == 'video' and hasattr(media, 'preview_image_url'):
+                                image_url = media.preview_image_url
+                                break
+                
+                tweet_data = {
+                    "id": tweet.id,
+                    "text": tweet.text,
+                    "likes": likes,
+                    "retweets": retweets,
+                    "comments": replies,
+                    "createdAt": tweet.created_at.isoformat(),
+                    "imageUrl": image_url,
+                    "permalink": f"https://twitter.com/{user_info.screen_name}/status/{tweet.id}"
+                }
+                
+                tweets_data.append(tweet_data)
+                
+                # Track best performing tweet
+                engagement = likes + retweets + replies
+                if engagement > max_engagement:
+                    max_engagement = engagement
+                    best_tweet = tweet_data
+            
+            # Calculate engagement rate
+            total_tweets = len(tweets_data)
+            total_engagement = total_likes + total_retweets + total_replies
+            engagement_rate = (total_engagement / max(total_tweets, 1) * 100) if total_tweets > 0 else 0
+            
+            # Generate timeline data (last 7 days)
+            timeline_data = []
+            from datetime import datetime, timedelta
+            
+            for i in range(6, -1, -1):  # Last 7 days
+                date = datetime.now() - timedelta(days=i)
+                date_str = date.strftime('%Y-%m-%d')
+                
+                # Count tweets for this day
+                day_tweets = [t for t in tweets_data if t['createdAt'].startswith(date_str)]
+                day_likes = sum(t['likes'] for t in day_tweets)
+                day_retweets = sum(t['retweets'] for t in day_tweets)
+                day_comments = sum(t['comments'] for t in day_tweets)
+                
+                timeline_data.append({
+                    "date": date_str,
+                    "tweets": len(day_tweets),
+                    "likes": day_likes,
+                    "retweets": day_retweets,
+                    "comments": day_comments
+                })
+            
+            return jsonify({
+                "profile": {
+                    "username": user_info.screen_name,
+                    "totalTweets": user_info.statuses_count,
+                    "followers": user_info.followers_count,
+                    "following": user_info.friends_count
+                },
+                "metrics": {
+                    "tweets": total_tweets,
+                    "likes": total_likes,
+                    "retweets": total_retweets,
+                    "comments": total_replies,
+                    "followers": user_info.followers_count,
+                    "engagementRate": f"{engagement_rate:.1f}%"
+                },
+                "timelineData": timeline_data,
+                "tweets": tweets_data,
+                "bestPerformingTweet": best_tweet
+            }), 200
+            
+        except tweepy.TweepyException as e:
+            logger.error(f"Error fetching tweets: {str(e)}")
+            return jsonify({"error": f"Failed to fetch tweets: {str(e)}"}), 500
+            
+    except Exception as e:
+        logger.error(f"Error in fetch_twitter_analytics: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+@app.route('/api/twitter/check-config', methods=['GET'])
+def check_twitter_config():
+    try:
+        # Check if we have the required Twitter API credentials
+        if all([API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET, BEARER_TOKEN]):
+            # You could optionally verify the credentials here by making a test API call
+            return jsonify({
+                'configured': True,
+                'username': 'Developer Account'  # You could fetch the actual username if needed
+            })
+        return jsonify({
+            'configured': False,
+            'error': 'Twitter API credentials not fully configured'
+        })
+    except Exception as e:
+        return jsonify({
+            'configured': False,
+            'error': str(e)
         }), 500
 
 @app.route('/api/health', methods=['GET'])

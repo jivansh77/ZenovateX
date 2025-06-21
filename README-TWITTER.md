@@ -12,7 +12,7 @@ This document explains how to set up and use the Twitter posting functionality i
 
 ### 1. Twitter API Credentials
 
-You need to have Twitter API credentials. These are already configured in the Python backend (`src/postbackend/post.py`), but you may want to replace them with your own:
+You need to have Twitter API credentials. These are configured in the Python backend (`src/postbackend/post.py`), so you may want to create .env variables for the following:
 
 - API_KEY
 - API_SECRET

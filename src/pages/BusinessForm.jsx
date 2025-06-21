@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { FacebookAuthProvider, signInWithPopup } from 'firebase/auth';
-import { FaInstagram, FaFacebook } from 'react-icons/fa';
+import { FaInstagram } from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FACEBOOK_PERMISSIONS } from '../facebookConfig';
    
 const BusinessForm = () => {
@@ -24,10 +26,12 @@ const BusinessForm = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [socialMediaData, setSocialMediaData] = useState({
-    instagram: null
+    instagram: null,
+    twitter: null
   });
   const [socialMediaLoading, setSocialMediaLoading] = useState({
-    instagram: false
+    instagram: false,
+    twitter: false
   });
 
   const handleInputChange = (e) => {
@@ -83,6 +87,40 @@ const BusinessForm = () => {
       setError('Failed to connect to Instagram. Please enable Facebook authentication in Firebase and try again.');
     } finally {
       setSocialMediaLoading(prev => ({ ...prev, instagram: false }));
+    }
+  };
+
+  const handleTwitterConnect = async () => {
+    setSocialMediaLoading(prev => ({ ...prev, twitter: true }));
+    try {
+      // For now, just verify the existing Twitter configuration
+      const response = await fetch('http://127.0.0.1:5000/api/twitter/check-config');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.configured) {
+          setSocialMediaData(prev => ({
+            ...prev,
+            twitter: {
+              username: data.username || 'Developer Account',
+              connectedAt: new Date().toISOString()
+            }
+          }));
+          
+          // Add twitter to social media presence if not already there
+          if (!formData.socialMediaPresence.includes('twitter')) {
+            handleSocialMediaChange('twitter');
+          }
+        } else {
+          throw new Error('Twitter API not configured');
+        }
+      } else {
+        throw new Error('Failed to verify Twitter configuration');
+      }
+    } catch (error) {
+      console.error('Twitter connection error:', error);
+      setError('Failed to connect to Twitter. Please check API configuration and try again.');
+    } finally {
+      setSocialMediaLoading(prev => ({ ...prev, twitter: false }));
     }
   };
 
@@ -372,6 +410,20 @@ const BusinessForm = () => {
                         : socialMediaLoading.instagram 
                           ? 'Connecting to Instagram...' 
                           : 'Connect Instagram Account'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleTwitterConnect}
+                      disabled={socialMediaLoading.twitter || socialMediaData.twitter}
+                      className={`btn ${socialMediaData.twitter ? 'btn-success' : 'btn-primary'} gap-2`}
+                    >
+                      <FontAwesomeIcon icon={faXTwitter} className="w-5 h-5" />
+                      {socialMediaData.twitter 
+                        ? `Twitter Connected (${socialMediaData.twitter.username})` 
+                        : socialMediaLoading.twitter 
+                          ? 'Connecting to Twitter...' 
+                          : 'Connect Twitter Account'}
                     </button>
                   </div>
                 </div>

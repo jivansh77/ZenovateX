@@ -8,10 +8,10 @@
 // Your long-lived access token (should be stored securely)
 // Get this by authenticating once through Facebook Graph API Explorer
 // or through a server-side process
-const INSTAGRAM_ACCESS_TOKEN = 'IGAAOlFfeLci5BZAFBKSzFXd1Q2cC1aVHIzVkI1TGdVd1FPTlhFeElxZAXFfcUZA2c2JRRkJ6di1RUndXSlZAxMjhGN09YTElEb1A0TmhrbFFLMXFGMEZAHYW1JOUxGWjk2aWs0aS1yaWpVVFM2al9OMkxobzk5blp1am1iSUdGOU91awZDZD';
+const INSTAGRAM_ACCESS_TOKEN = import.meta.env.INSTAGRAM_ACCESS_TOKEN;
 
 // Your Instagram Business ID
-const INSTAGRAM_BUSINESS_ID = '17841472918092566';
+const INSTAGRAM_BUSINESS_ID = import.meta.env.INSTAGRAM_BUSINESS_ID;
 
 // API version
 const API_VERSION = 'v16.0';

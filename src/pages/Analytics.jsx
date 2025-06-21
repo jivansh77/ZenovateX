@@ -1,33 +1,57 @@
 import { RiBarChartBoxLine, RiPieChartLine, RiLineChartLine, RiUserSmileLine, RiImageLine, RiChat3Line } from 'react-icons/ri';
 import { useState, useEffect } from 'react';
-import { FaInstagram } from 'react-icons/fa';
-import { formatInstagramDataForAnalytics } from '../services/instagramService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
+// import { FaInstagram } from 'react-icons/fa';
+// import { formatInstagramDataForAnalytics } from '../services/instagramService';
+import { formatTwitterDataForAnalytics } from '../services/twitterService';
+import { auth, db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export default function Analytics() {
   const [selectedMetric, setSelectedMetric] = useState(0); // Default to Likes
   const [loading, setLoading] = useState(true);
-  const [instagramData, setInstagramData] = useState(null);
+  const [twitterData, setTwitterData] = useState(null);
+  // const [instagramData, setInstagramData] = useState(null);
   const [error, setError] = useState('');
   const [timeRange, setTimeRange] = useState('7');
+  const [campaigns, setCampaigns] = useState([]);
   
   useEffect(() => {
-    const fetchInstagramData = async () => {
+    const fetchTwitterData = async () => {
       setLoading(true);
       try {
-        // Fetch Instagram data using our service
-        const data = await formatInstagramDataForAnalytics(parseInt(timeRange, 10));
-        setInstagramData(data);
+        // Fetch Twitter data using our service
+        const data = await formatTwitterDataForAnalytics(parseInt(timeRange, 10));
+        setTwitterData(data);
+        
+        // Fetch all campaigns from Firebase
+        const user = auth.currentUser;
+        if (user) {
+          const campaignsQuery = query(
+            collection(db, 'campaigns'),
+            where('userId', '==', user.uid)
+          );
+          const campaignsSnapshot = await getDocs(campaignsQuery);
+          const campaignsList = campaignsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setCampaigns(campaignsList);
+        }
+        
         setError('');
       } catch (error) {
-        console.error('Error fetching Instagram data:', error);
-        setError('Failed to load Instagram analytics data');
-        setInstagramData(null);
+        console.error('Error fetching data:', error);
+        setError('Failed to load analytics data');
+        setTwitterData(null);
+        setCampaigns([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchInstagramData();
+    fetchTwitterData();
   }, [timeRange]);
 
   // Handler for time range change
@@ -35,7 +59,7 @@ export default function Analytics() {
     setTimeRange(e.target.value);
   };
 
-  // Sample data as fallback if Instagram data isn't available
+  // Sample data as fallback if Twitter data isn't available
   const defaultMetrics = [
     {
       name: 'Likes',
@@ -45,14 +69,14 @@ export default function Analytics() {
       history: [0, 0, 1, 0]
     },
     {
-      name: 'Comments',
+      name: 'Retweets',
       value: '1',
       change: '+100%',
       icon: RiChat3Line,
       history: [0, 0, 1, 0]
     },
     {
-      name: 'Posts',
+      name: 'Tweets',
       value: '0',
       change: '0%',
       icon: RiImageLine,
@@ -67,94 +91,88 @@ export default function Analytics() {
     },
   ];
 
-  // Convert Instagram data to metrics format
+  // Convert Twitter data to metrics format
   const getMetrics = () => {
-    if (!instagramData) return defaultMetrics;
+    if (!twitterData) return [];
     
     // Get timeline data for charting
-    const timelineData = instagramData.timelineData || [];
+    const timelineData = twitterData.timelineData || [];
+
+    // Calculate percentage changes
+    const calculateChange = (history) => {
+      if (history.length < 2) return '0%';
+      
+      // Get the sum of last half vs first half of the period
+      const midPoint = Math.floor(history.length / 2);
+      const recentSum = history.slice(midPoint).reduce((a, b) => a + b, 0);
+      const previousSum = history.slice(0, midPoint).reduce((a, b) => a + b, 0);
+      
+      if (previousSum === 0) return recentSum > 0 ? '+100%' : '0%';
+      
+      const percentChange = ((recentSum - previousSum) / previousSum) * 100;
+      return `${percentChange > 0 ? '+' : ''}${percentChange.toFixed(1)}%`;
+    };
     
     return [
       {
         name: 'Likes',
-        value: instagramData.metrics.likes.toString(),
-        change: '+10%', // You would calculate this from historical data
+        value: twitterData.metrics.likes.toString(),
+        change: calculateChange(timelineData.map(day => day.likes)),
         icon: RiUserSmileLine,
         history: timelineData.map(day => day.likes)
       },
       {
-        name: 'Comments',
-        value: instagramData.metrics.comments.toString(),
-        change: '+5%', // You would calculate this from historical data
+        name: 'Retweets',
+        value: twitterData.metrics.retweets.toString(),
+        change: calculateChange(timelineData.map(day => day.retweets)),
         icon: RiChat3Line,
-        history: timelineData.map(day => day.comments)
+        history: timelineData.map(day => day.retweets)
       },
       {
-        name: 'Posts',
-        value: instagramData.metrics.posts.toString(),
-        change: '+0%', // You would calculate this from historical data
+        name: 'Tweets',
+        value: twitterData.metrics.tweets.toString(),
+        change: calculateChange(timelineData.map(day => day.tweets)),
         icon: RiImageLine,
-        history: timelineData.map(day => day.posts)
+        history: timelineData.map(day => day.tweets)
       },
       {
         name: 'Followers',
-        value: instagramData.metrics.followers.toString(),
-        change: '+2%', // You would calculate this from historical data
+        value: twitterData.metrics.followers.toString(),
+        change: calculateChange(timelineData.map(() => twitterData.metrics.followers / timelineData.length)),
         icon: RiLineChartLine,
-        // For followers, we typically don't have daily data, so use the current value
-        history: timelineData.map(() => instagramData.metrics.followers / timelineData.length)
+        history: timelineData.map(() => twitterData.metrics.followers / timelineData.length)
       },
     ];
   };
 
   const metrics = getMetrics();
 
-  // Calculate the maximum value for graph scaling
-  const maxValue = Math.max(
-    ...metrics.map(metric => Math.max(...metric.history, 1)) // Ensure at least 1 to prevent division by zero
-  );
-
-  // Get dates for the chart
+  // Get dates for the chart from the actual timeline data
   const getDates = () => {
-    const dates = [];
-    const daysBack = parseInt(timeRange, 10);
-    for (let i = daysBack - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      dates.push(date.getDate());
-    }
-    return dates;
+    if (!twitterData?.timelineData) return [];
+    
+    return twitterData.timelineData.map(day => {
+      const date = new Date(day.date);
+      return {
+        day: date.getDate(),
+        month: date.toLocaleString('default', { month: 'short' })
+      };
+    });
   };
 
   const dates = getDates();
 
-  // Campaign data (could be connected to a real backend)
-  const campaigns = [
-    {
-      name: 'Summer Collection',
-      reach: '850K',
-      engagement: '5.2%',
-      conversions: '3.8%',
-      roi: '312%',
-      status: 'active',
-    },
-    {
-      name: 'Back to School',
-      reach: '620K',
-      engagement: '4.1%',
-      conversions: '2.9%',
-      roi: '245%',
-      status: 'active',
-    },
-    {
-      name: 'Holiday Special',
-      reach: '980K',
-      engagement: '6.3%',
-      conversions: '4.2%',
-      roi: '378%',
-      status: 'scheduled',
-    },
-  ];
+  // Calculate the maximum value for graph scaling
+  const maxValue = metrics.length > 0 ? Math.max(
+    ...metrics[selectedMetric].history.map(value => value || 0),
+    1  // Ensure we have at least a scale of 1
+  ) : 1;
+
+  // Calculate y-axis scale values
+  const yAxisValues = [...Array(5)].map((_, index) => {
+    const value = ((maxValue / 4) * (4 - index));
+    return value > 100 ? Math.round(value) : value.toFixed(1);
+  });
 
   return (
     <div className="p-6 space-y-6">
@@ -177,6 +195,16 @@ export default function Analytics() {
       {error && (
         <div className="alert alert-error">
           <span>{error}</span>
+        </div>
+      )}
+      
+      {twitterData?.error && (
+        <div className="alert alert-warning">
+          <div>
+            <h3 className="font-bold">Twitter API Connection Issue</h3>
+            <p>Unable to fetch real Twitter data: {twitterData.error}</p>
+            <p className="text-sm mt-2">Showing mock data. Please check your Twitter API credentials in the backend.</p>
+          </div>
         </div>
       )}
 
@@ -224,57 +252,63 @@ export default function Analytics() {
                   </button>
                 ))}
               </div>
-              <p className="text-sm text-base-content/70 mt-1">
-                {metrics[selectedMetric].name} Growth
-              </p>
-              <div className="h-[300px] bg-base-100 rounded-lg p-6">
-                <div className="relative w-full h-full">
-                  {/* Y-axis */}
-                  <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-sm text-base-content/70">
-                    {[...Array(5)].map((_, index) => {
-                      const value = ((maxValue / 4) * (4 - index)).toFixed(1);
-                      return (
-                        <div key={index} className="flex items-center h-6">
-                          <span className="mr-2">{value}</span>
-                          <div 
-                            className="w-full border-t border-base-300 absolute left-8" 
-                            style={{ width: 'calc(100vw - 250px)' }} 
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Graph Content */}
-                  <div className="pl-16 h-full">
-                    <div className="relative h-full flex items-end justify-between">
-                      {/* Bars */}
-                      {metrics[selectedMetric].history.map((value, index) => (
-                        <div key={index} className="flex-1 flex justify-center">
-                          <div 
-                            className={`w-16 ${value > 0 ? 'bg-primary' : 'bg-base-300'} rounded-t-lg transition-all duration-500`} 
-                            style={{ 
-                              height: `${maxValue > 0 ? (value / maxValue) * 100 : 0}%`
-                            }}
-                          >
-                            <div className="text-xs text-center mt-2">{dates[index]}</div>
+              {metrics.length > 0 && (
+                <>
+                  <p className="text-sm text-base-content/70 mt-1">
+                    {metrics[selectedMetric].name} Growth
+                  </p>
+                  <div className="h-[300px] bg-base-100 rounded-lg p-6">
+                    <div className="relative w-full h-full">
+                      {/* Y-axis */}
+                      <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-sm text-base-content/70">
+                        {yAxisValues.map((value, index) => (
+                          <div key={index} className="flex items-center h-6">
+                            <span className="mr-2">{value}</span>
+                            <div 
+                              className="w-full border-t border-base-300 absolute left-8" 
+                              style={{ width: 'calc(100vw - 250px)' }} 
+                            />
                           </div>
+                        ))}
+                      </div>
+
+                      {/* Graph Content */}
+                      <div className="pl-16 h-full">
+                        <div className="relative h-full flex items-end justify-between">
+                          {/* Bars */}
+                          {metrics[selectedMetric].history.map((value, index) => (
+                            <div key={index} className="flex-1 flex justify-center">
+                              <div 
+                                className={`w-16 ${value > 0 ? 'bg-primary' : 'bg-base-300'} rounded-t-lg transition-all duration-500`} 
+                                style={{ 
+                                  height: `${(value / maxValue) * 100}%`,
+                                  minHeight: '2px'  // Ensure very small values are still visible
+                                }}
+                              >
+                                <div className="text-xs text-center mt-2">
+                                  {dates[index]?.day}
+                                  <br />
+                                  {dates[index]?.month}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Instagram Insights Section */}
-          {instagramData && (
+          {/* Twitter Insights Section */}
+          {twitterData && (
             <div className="card bg-base-100 shadow-lg">
               <div className="card-body">
                 <h2 className="card-title">
-                  <FaInstagram className="text-pink-500" />
-                  Instagram Insights
+                  <FontAwesomeIcon icon={faXTwitter} className="text-black" />
+                  Twitter Insights
                 </h2>
                 <div className="divider"></div>
                 
@@ -282,50 +316,50 @@ export default function Analytics() {
                   <div className="card bg-base-200">
                     <div className="card-body">
                       <h3 className="text-lg font-semibold">Account Overview</h3>
-                      <p className="text-sm">@{instagramData.profile.username}</p>
+                      <p className="text-sm">@{twitterData.profile.username}</p>
                       <div className="flex gap-4 mt-2">
                         <div>
                           <p className="text-xs opacity-70">Followers</p>
-                          <p className="text-xl font-bold">{instagramData.metrics.followers}</p>
+                          <p className="text-xl font-bold">{twitterData.metrics.followers}</p>
                         </div>
                         <div>
-                          <p className="text-xs opacity-70">Posts</p>
-                          <p className="text-xl font-bold">{instagramData.profile.totalPosts}</p>
+                          <p className="text-xs opacity-70">Tweets</p>
+                          <p className="text-xl font-bold">{twitterData.profile.totalTweets}</p>
                         </div>
                         <div>
                           <p className="text-xs opacity-70">Engagement Rate</p>
-                          <p className="text-xl font-bold">{instagramData.metrics.engagementRate}</p>
+                          <p className="text-xl font-bold">{twitterData.metrics.engagementRate}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  {instagramData.bestPerformingPost && (
+                  {twitterData.bestPerformingTweet && (
                     <div className="card bg-base-200">
                       <div className="card-body">
-                        <h3 className="text-lg font-semibold">Best Performing Content</h3>
+                        <h3 className="text-lg font-semibold">Best Performing Tweet</h3>
                         <div className="flex items-center gap-2">
                           <div className="w-16 h-16 bg-gray-300 rounded-lg overflow-hidden">
-                            {instagramData.bestPerformingPost.imageUrl && (
+                            {twitterData.bestPerformingTweet.imageUrl && (
                               <img 
-                                src={instagramData.bestPerformingPost.imageUrl} 
-                                alt="Top post" 
+                                src={twitterData.bestPerformingTweet.imageUrl} 
+                                alt="Top tweet" 
                                 className="w-full h-full object-cover"
                               />
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-medium">Top post this {timeRange === '7' ? 'week' : timeRange === '30' ? 'month' : 'quarter'}</p>
+                            <p className="text-sm font-medium">Top tweet this {timeRange === '7' ? 'week' : timeRange === '30' ? 'month' : 'quarter'}</p>
                             <p className="text-xs opacity-70">
-                              {instagramData.bestPerformingPost.likes} likes • {instagramData.bestPerformingPost.comments} comments
+                              {twitterData.bestPerformingTweet.likes} likes • {twitterData.bestPerformingTweet.retweets} retweets • {twitterData.bestPerformingTweet.comments} replies
                             </p>
                             <a 
-                              href={instagramData.bestPerformingPost.permalink} 
+                              href={twitterData.bestPerformingTweet.permalink} 
                               target="_blank" 
                               rel="noopener noreferrer" 
                               className="text-xs text-primary"
                             >
-                              View on Instagram
+                              View on Twitter
                             </a>
                           </div>
                         </div>
@@ -342,40 +376,45 @@ export default function Analytics() {
             <div className="card-body">
               <h2 className="card-title">Campaign Performance</h2>
               <div className="overflow-x-auto">
-                <table className="table w-full">
-                  <thead>
-                    <tr>
-                      <th>Campaign</th>
-                      <th>Reach</th>
-                      <th>Engagement</th>
-                      <th>Conversions</th>
-                      <th>ROI</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {campaigns.map((campaign) => (
-                      <tr key={campaign.name}>
-                        <td>{campaign.name}</td>
-                        <td>{campaign.reach}</td>
-                        <td>{campaign.engagement}</td>
-                        <td>{campaign.conversions}</td>
-                        <td>{campaign.roi}</td>
-                        <td>
-                          <span className={`badge ${
-                            campaign.status === 'active' ? 'badge-success' : 'badge-warning'
-                          }`}>
-                            {campaign.status}
-                          </span>
-                        </td>
-                        <td>
-                          <button className="btn btn-sm btn-ghost">View Details</button>
-                        </td>
+                {campaigns.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No campaigns found. Create your first campaign!</p>
+                  </div>
+                ) : (
+                  <table className="table w-full">
+                    <thead>
+                      <tr>
+                        <th>Campaign Name</th>
+                        <th>Status</th>
+                        <th>Audience Reach</th>
+                        <th>Conversion Rate</th>
+                        <th>Budget</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {campaigns.map((campaign) => (
+                        <tr key={campaign.id}>
+                          <td>{campaign.name}</td>
+                          <td>
+                            <span className={`badge ${
+                              campaign.status === 'active' ? 'badge-success' : 'badge-warning'
+                            }`}>
+                              {campaign.status}
+                            </span>
+                          </td>
+                          <td>{campaign.metrics?.reach || '0'}</td>
+                          <td>{campaign.metrics?.conversions || '0%'}</td>
+                          <td>${campaign.budget?.toLocaleString()}</td>
+                          <td>
+                            <button className="btn btn-sm btn-ghost">Edit</button>
+                            <button className="btn btn-sm btn-ghost">View</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           </div>
@@ -389,9 +428,10 @@ export default function Analytics() {
                   <div>
                     <h3 className="font-bold">Key Findings</h3>
                     <ul className="list-disc list-inside mt-2 space-y-1">
-                      <li>Video content outperforms images by 45%</li>
-                      <li>Peak engagement occurs between 6-8 PM</li>
-                      <li>Instagram Stories drive 30% more conversions</li>
+                      <li>Tweets with images get 150% more retweets</li>
+                      <li>Peak engagement occurs between 9-10 AM and 7-9 PM</li>
+                      <li>Threads perform better than single tweets</li>
+                      <li>Hashtag usage increases visibility by 40%</li>
                     </ul>
                   </div>
                 </div>
@@ -405,9 +445,10 @@ export default function Analytics() {
                   <div>
                     <h3 className="font-bold">Optimization Opportunities</h3>
                     <ul className="list-disc list-inside mt-2 space-y-1">
-                      <li>Increase video content in upcoming campaigns</li>
-                      <li>Adjust posting schedule to target peak hours</li>
-                      <li>Allocate 40% more budget to Instagram Stories</li>
+                      <li>Include high-quality images in all tweets</li>
+                      <li>Schedule tweets during peak engagement hours</li>
+                      <li>Use 2-3 relevant hashtags per tweet</li>
+                      <li>Engage with replies to boost algorithm visibility</li>
                     </ul>
                   </div>
                 </div>

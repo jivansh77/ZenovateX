@@ -19,9 +19,6 @@ import Features from './pages/Features'
 import TrendingEvents from './components/EventTrigger'
 import FineTunePage from './pages/FineTunePage'
 import ContentGenerator from './pages/ContentGenerator'
-import getTweetsData from './TwitterClient'
-import ExitIntentPopup from './pages/ExitIntentPopup';
-import CustomizationForm from './pages/CustomizationForm';
 import SEOAudit from './pages/SEOAudit';
 import ReachbeeCompetitorAnalysis from './pages/ReachbeeCompetitorAnalysis';
 
