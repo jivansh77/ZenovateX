@@ -106,19 +106,19 @@ const ReachbeeCompetitorAnalysis = () => {
   const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-base-100">
+      <div className="container mx-auto p-6 space-y-6">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 text-gray-800">Competitor Analysis</h1>
-          <p className="text-xl text-gray-600">
+        <div className="flex flex-col space-y-2">
+          <h1 className="text-2xl font-bold text-base-content">Competitor Analysis</h1>
+          <p className="text-base text-base-content">
             Analyze Instagram profiles and get insights into competitor performance
           </p>
         </div>
 
         {/* Search Section */}
         <div className="max-w-2xl mx-auto mb-12">
-          <div className="card bg-white shadow-xl rounded-3xl">
+          <div className="card bg-base-100 shadow-xl rounded-3xl">
             <div className="card-body p-8">
               <div className="flex flex-col sm:flex-row gap-4">
                 <input
@@ -160,9 +160,9 @@ const ReachbeeCompetitorAnalysis = () => {
 
         {/* Profile Overview */}
         {profileData && (
-          <div className="card bg-white shadow-xl rounded-3xl mb-8">
+          <div className="card bg-base-100 shadow-xl rounded-3xl mb-8">
             <div className="card-body p-8">
-              <h2 className="text-3xl font-bold mb-6 text-gray-800">Profile Overview</h2>
+              <h2 className="text-xl font-bold mb-6 text-base-content">Profile Overview</h2>
               <div className="flex flex-col lg:flex-row items-start gap-8">
                 <div className="flex-shrink-0">
                   <div className="avatar">
@@ -177,32 +177,32 @@ const ReachbeeCompetitorAnalysis = () => {
                 
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <div className="p-4 bg-gray-50 rounded-2xl">
-                      <p className="text-sm text-gray-500 font-medium">USERNAME</p>
-                      <p className="text-xl font-bold text-gray-800">@{profileData.username}</p>
+                    <div className="p-4 bg-base-100 rounded-2xl">
+                      <p className="text-sm text-base-content font-medium">USERNAME</p>
+                      <p className="text-xl font-bold text-base-content">@{profileData.username}</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-2xl">
-                      <p className="text-sm text-gray-500 font-medium">FOLLOWERS</p>
-                      <p className="text-xl font-bold text-gray-800">{profileData.follower_count?.toLocaleString()}</p>
+                    <div className="p-4 bg-base-100 rounded-2xl">
+                      <p className="text-sm text-base-content font-medium">FOLLOWERS</p>
+                      <p className="text-xl font-bold text-base-content">{profileData.follower_count?.toLocaleString()}</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-2xl">
-                      <p className="text-sm text-gray-500 font-medium">FOLLOWING</p>
-                      <p className="text-xl font-bold text-gray-800">{profileData.following_count?.toLocaleString()}</p>
+                    <div className="p-4 bg-base-100 rounded-2xl">
+                      <p className="text-sm text-base-content font-medium">FOLLOWING</p>
+                      <p className="text-xl font-bold text-base-content">{profileData.following_count?.toLocaleString()}</p>
                     </div>
                   </div>
                   
                   <div className="space-y-4">
-                    <div className="p-4 bg-gray-50 rounded-2xl">
-                      <p className="text-sm text-gray-500 font-medium">TOTAL POSTS</p>
-                      <p className="text-xl font-bold text-gray-800">{profileData.media_count?.toLocaleString()}</p>
+                    <div className="p-4 bg-base-100 rounded-2xl">
+                      <p className="text-sm text-base-content font-medium">TOTAL POSTS</p>
+                      <p className="text-xl font-bold text-base-content">{profileData.media_count?.toLocaleString()}</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-2xl">
-                      <p className="text-sm text-gray-500 font-medium">CATEGORY</p>
-                      <p className="text-xl font-bold text-gray-800">{profileData.category || 'N/A'}</p>
+                    <div className="p-4 bg-base-100 rounded-2xl">
+                      <p className="text-sm text-base-content font-medium">CATEGORY</p>
+                      <p className="text-xl font-bold text-base-content">{profileData.category || 'N/A'}</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-2xl">
-                      <p className="text-sm text-gray-500 font-medium">EMAIL</p>
-                      <p className="text-xl font-bold text-gray-800">{profileData.public_email || 'N/A'}</p>
+                    <div className="p-4 bg-base-100 rounded-2xl">
+                      <p className="text-sm text-base-content font-medium">EMAIL</p>
+                      <p className="text-xl font-bold text-base-content">{profileData.public_email || 'N/A'}</p>
                     </div>
                   </div>
                 </div>
@@ -210,8 +210,8 @@ const ReachbeeCompetitorAnalysis = () => {
               
               {profileData.biography && (
                 <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl">
-                  <p className="text-sm text-gray-500 font-medium mb-2">BIO</p>
-                  <p className="text-lg text-gray-800 leading-relaxed">{profileData.biography}</p>
+                  <p className="text-sm text-base-content font-medium mb-2">BIO</p>
+                  <p className="text-lg text-base-content leading-relaxed">{profileData.biography}</p>
                 </div>
               )}
             </div>
@@ -222,9 +222,9 @@ const ReachbeeCompetitorAnalysis = () => {
         {postData && postData.items && (
           <div className="space-y-8">
             {/* Key Metrics */}
-            <div className="card bg-white shadow-xl rounded-3xl">
+            <div className="card bg-base-100 shadow-xl rounded-3xl">
               <div className="card-body p-8">
-                <h3 className="text-3xl font-bold mb-6 text-gray-800">Key Performance Metrics</h3>
+                <h3 className="text-xl font-bold mb-6 text-base-content">Key Performance Metrics</h3>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="text-center p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl">
                     <p className="text-3xl font-bold mb-2">
@@ -255,9 +255,9 @@ const ReachbeeCompetitorAnalysis = () => {
             </div>
 
             {/* Engagement Chart */}
-            <div className="card bg-white shadow-xl rounded-3xl">
+            <div className="card bg-base-100 shadow-xl rounded-3xl">
               <div className="card-body p-8">
-                <h3 className="text-3xl font-bold mb-6 text-gray-800">Post Engagement Analysis</h3>
+                <h3 className="text-xl font-bold mb-6 text-base-content">Post Engagement Analysis</h3>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={getEngagementData()}>
@@ -291,9 +291,9 @@ const ReachbeeCompetitorAnalysis = () => {
             {/* Content Distribution & Posting Frequency */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Media Type Distribution */}
-              <div className="card bg-white shadow-xl rounded-3xl">
+              <div className="card bg-base-100 shadow-xl rounded-3xl">
                 <div className="card-body p-8">
-                  <h3 className="text-2xl font-bold mb-6 text-gray-800">Content Type Distribution</h3>
+                  <h3 className="text-xl font-bold mb-6 text-base-content">Content Type Distribution</h3>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -326,9 +326,9 @@ const ReachbeeCompetitorAnalysis = () => {
               </div>
 
               {/* Posting Frequency */}
-              <div className="card bg-white shadow-xl rounded-3xl">
+              <div className="card bg-base-100 shadow-xl rounded-3xl">
                 <div className="card-body p-8">
-                  <h3 className="text-2xl font-bold mb-6 text-gray-800">Posting Frequency</h3>
+                  <h3 className="text-xl font-bold mb-6 text-base-content">Posting Frequency</h3>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={getPostingFrequency()}>
@@ -365,12 +365,12 @@ const ReachbeeCompetitorAnalysis = () => {
             </div>
 
             {/* Recent Posts Grid */}
-            <div className="card bg-white shadow-xl rounded-3xl">
+            <div className="card bg-base-100 shadow-xl rounded-3xl">
               <div className="card-body p-8">
-                <h3 className="text-3xl font-bold mb-6 text-gray-800">Recent Posts Preview</h3>
+                <h3 className="text-xl font-bold mb-6 text-base-content">Recent Posts Preview</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {postData.items.slice(0, 6).map((post, index) => (
-                    <div key={post.id} className="card bg-gray-50 shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div key={post.id} className="card bg-base-100 shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
                       <figure className="aspect-square">
                         <img
                           src={post.image_versions2?.candidates?.[0]?.url}
@@ -384,7 +384,7 @@ const ReachbeeCompetitorAnalysis = () => {
                             <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                             </svg>
-                            <span className="text-sm font-bold text-gray-700">
+                            <span className="text-sm font-bold text-base-content">
                               {(post.like_count || 0).toLocaleString()}
                             </span>
                           </div>
@@ -392,12 +392,12 @@ const ReachbeeCompetitorAnalysis = () => {
                             <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
                             </svg>
-                            <span className="text-sm font-bold text-gray-700">
+                            <span className="text-sm font-bold text-base-content">
                               {(post.comment_count || 0).toLocaleString()}
                             </span>
                           </div>
                         </div>
-                        <div className="text-xs text-gray-500 font-medium">
+                        <div className="text-xs text-base-content font-medium">
                           {new Date(post.taken_at * 1000).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',

@@ -44,62 +44,62 @@ exports.getTweets = onRequest(async (req, res) => {
   }
 });
 
-// function makeRapidApiRequest(path) {
-//   const options = {
-//     method: 'GET',
-//     hostname: 'instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com',
-//     path,
-//     headers: {
-//       'x-rapidapi-key': process.env.RAPIDAPI_KEY,
-//       'x-rapidapi-host': 'instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com',
-//     }
-//   };
-//   return new Promise((resolve, reject) => {
-//     const req = https.request(options, (res) => {
-//       const chunks = [];
-//       res.on('data', (chunk) => chunks.push(chunk));
-//       res.on('end', () => {
-//         const body = Buffer.concat(chunks).toString();
-//         try {
-//           resolve(JSON.parse(body));
-//         } catch (e) {
-//           reject(e);
-//         }
-//       });
-//     });
-//     req.on('error', reject);
-//     req.end();
-//   });
-// }
+function makeRapidApiRequest(path) {
+  const options = {
+    method: 'GET',
+    hostname: 'instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com',
+    path,
+    headers: {
+      'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+      'x-rapidapi-host': 'instagram-scrapper-posts-reels-stories-downloader.p.rapidapi.com',
+    }
+  };
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        const body = Buffer.concat(chunks).toString();
+        try {
+          resolve(JSON.parse(body));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
 
-// exports.fetchCompetitorStats = onRequest(async (req, res) => {
-//   const { user_id } = req.query;
-//   if (!user_id) {
-//     return res.status(400).json({ error: "Missing user_id parameter" });
-//   }
+exports.fetchCompetitorStats = onRequest(async (req, res) => {
+  const { user_id } = req.query;
+  if (!user_id) {
+    return res.status(400).json({ error: "Missing user_id parameter" });
+  }
 
-//   try {
-//     // Make parallel API calls
-//     const [followers, posts, stories, comments] = await Promise.all([
-//       makeRapidApiRequest(`/followers_by_user_id?user_id=${user_id}`),
-//       makeRapidApiRequest(`/posts_by_user_id?user_id=${user_id}`),
-//       makeRapidApiRequest(`/stories_by_user_id?user_id=${user_id}`),
-//       makeRapidApiRequest(`/comments_by_user_id?user_id=${user_id}`),
-//     ]);
+  try {
+    // Make parallel API calls
+    const [followers, posts, stories, comments] = await Promise.all([
+      makeRapidApiRequest(`/followers_by_user_id?user_id=${user_id}`),
+      makeRapidApiRequest(`/posts_by_user_id?user_id=${user_id}`),
+      makeRapidApiRequest(`/stories_by_user_id?user_id=${user_id}`),
+      makeRapidApiRequest(`/comments_by_user_id?user_id=${user_id}`),
+    ]);
 
-//     const snapshot = {
-//       timestamp: Date.now(),
-//       followers,
-//       posts,
-//       stories,
-//       comments,
-//     };
+    const snapshot = {
+      timestamp: Date.now(),
+      followers,
+      posts,
+      stories,
+      comments,
+    };
 
-//     await db.collection('competitors').doc(user_id).set(snapshot);
+    await db.collection('competitors').doc(user_id).set(snapshot);
 
-//     res.status(200).json(snapshot);
-//   } catch (err) {
-//     console.error("Error fetching competitor data:", err);
-//     res.status(500).json({ error: "Failed to fetch competitor data" });
-//   }
-// });
+    res.status(200).json(snapshot);
+  } catch (err) {
+    console.error("Error fetching competitor data:", err);
+    res.status(500).json({ error: "Failed to fetch competitor data" });
+  }
+});

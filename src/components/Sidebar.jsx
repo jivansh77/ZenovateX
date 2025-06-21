@@ -22,6 +22,7 @@ export default function Sidebar() {
     { name: 'Campaign Builder', href: '/campaign-builder', icon: RiRocketLine },
     { name: 'Analytics', href: '/analytics', icon: RiBarChartBoxLine },
     { name: 'SEO Audit', href: '/seo-audit', icon: RiSearchLine },
+    { name: 'Competitor Analysis', href: '/competitor', icon: RiGroupLine },
   ];
 
   return (

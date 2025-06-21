@@ -27,7 +27,7 @@ import ReachbeeCompetitorAnalysis from './pages/ReachbeeCompetitorAnalysis';
 
 const AppContent = () => {
   const location = useLocation();
-  const showSidebar = ['/dashboard', '/audience-insights', '/content-studio', '/campaign-builder', '/analytics', '/finetune', '/campaign-builder/template', '/seo-audit'].includes(location.pathname);
+  const showSidebar = ['/dashboard', '/audience-insights', '/content-studio', '/campaign-builder', '/analytics', '/finetune', '/campaign-builder/template', '/seo-audit', '/competitor'].includes(location.pathname);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-base-100 to-base-200">
