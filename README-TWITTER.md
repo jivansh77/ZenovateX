@@ -18,6 +18,7 @@ You need to have Twitter API credentials. These are configured in the Python bac
 - API_SECRET
 - ACCESS_TOKEN
 - ACCESS_TOKEN_SECRET
+- BEARER_TOKEN
 
 Make sure your Twitter app has the necessary permissions:
 - Read and Write permissions
