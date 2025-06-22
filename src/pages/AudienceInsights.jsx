@@ -137,7 +137,7 @@ export default function AudienceInsights() {
       </div>
 
       {/* Connected Platforms */}
-      <div className="alert alert-info">
+      <div className="alert ">
         <div>
           <h3 className="font-bold">Connected Platforms</h3>
           <div className="mt-2 space-x-2">
@@ -192,7 +192,7 @@ export default function AudienceInsights() {
       <div className="card bg-base-100 shadow-lg">
         <div className="card-body">
           <h2 className="card-title">AI Recommendations</h2>
-          <div className="alert alert-success">
+          <div className="alert">
             <div>
               <h3 className="font-bold">Targeting Opportunities</h3>
               <ul className="list-disc list-inside mt-2 space-y-1">

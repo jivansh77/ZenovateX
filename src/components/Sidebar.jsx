@@ -8,7 +8,8 @@ import {
   RiPencilRulerLine,
   RiRocketLine,
   RiBarChartBoxLine,
-  RiSearchLine
+  RiSearchLine,
+  RiPaletteLine
 } from 'react-icons/ri';
 
 export default function Sidebar() {
@@ -17,12 +18,12 @@ export default function Sidebar() {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: RiDashboardLine },
-    // { name: 'Audience Insights', href: '/audience-insights', icon: RiGroupLine },
     { name: 'Content Studio', href: '/content-studio', icon: RiPencilRulerLine },
     { name: 'Campaign Builder', href: '/campaign-builder', icon: RiRocketLine },
     { name: 'Analytics', href: '/analytics', icon: RiBarChartBoxLine },
     { name: 'SEO Audit', href: '/seo-audit', icon: RiSearchLine },
     { name: 'Competitor Analysis', href: '/competitor', icon: RiGroupLine },
+    { name: 'Brand Kit Generator', href: '/brand-kit-generator', icon: RiPaletteLine },
   ];
 
   return (

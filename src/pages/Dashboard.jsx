@@ -668,7 +668,7 @@ export default function Dashboard() {
       <div className="card bg-base-100 shadow-lg">
         <div className="card-body">
           <h2 className="card-title">AI-Powered Insights</h2>
-          <div className="alert alert-info">
+          <div className="alert ">
             <div>
               <h3 className="font-bold">Optimization Opportunities</h3>
               <ul className="list-disc list-inside mt-2 space-y-1">

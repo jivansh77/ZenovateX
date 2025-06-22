@@ -424,7 +424,7 @@ export default function Analytics() {
             <div className="card bg-base-100 shadow-lg">
               <div className="card-body">
                 <h2 className="card-title">AI Performance Insights</h2>
-                <div className="alert alert-info">
+                <div className="alert ">
                   <div>
                     <h3 className="font-bold">Key Findings</h3>
                     <ul className="list-disc list-inside mt-2 space-y-1">
@@ -441,7 +441,7 @@ export default function Analytics() {
             <div className="card bg-base-100 shadow-lg">
               <div className="card-body">
                 <h2 className="card-title">Recommendations</h2>
-                <div className="alert alert-success">
+                <div className="alert">
                   <div>
                     <h3 className="font-bold">Optimization Opportunities</h3>
                     <ul className="list-disc list-inside mt-2 space-y-1">

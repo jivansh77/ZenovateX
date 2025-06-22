@@ -714,7 +714,7 @@ export default function CampaignBuilder() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="alert alert-success">
+                    <div className="alert">
                       <div>
                         <h3 className="font-bold">Budget Optimization Insights</h3>
                         <ul className="list-disc list-inside mt-2 space-y-1">

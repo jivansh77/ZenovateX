@@ -675,7 +675,7 @@ export default function SEOAudit() {
                       <span className="text-success">{auditData.results.content.analysis.headings.structure}</span>
                     </div>
                     {auditData.results.content.analysis.headings.issues.length > 0 && (
-                      <div className="alert alert-info">
+                      <div className="alert ">
                         <div className="text-sm">
                           Issues: {auditData.results.content.analysis.headings.issues.join(', ')}
                         </div>
@@ -709,7 +709,7 @@ export default function SEOAudit() {
                   </div>
                 </div>
                 {!auditData.results.content.analysis.keywordDensity.optimal && (
-                  <div className="alert alert-info mt-4">
+                  <div className="alert  mt-4">
                     <div className="text-sm">
                       {auditData.results.content.analysis.keywordDensity.suggestion}
                     </div>
@@ -825,7 +825,7 @@ export default function SEOAudit() {
                           </div>
                         </div>
                         <p className="text-sm text-base-content/70 mb-3">{rec.description}</p>
-                        <div className="alert alert-info mb-3">
+                        <div className="alert  mb-3">
                           <div className="text-sm">
                             <strong>Expected Impact:</strong> {rec.impact}
                           </div>

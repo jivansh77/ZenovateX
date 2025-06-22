@@ -775,7 +775,7 @@ export default function ContentStudio() {
                       />
                     </div>
                   ) : (
-                    <div className="alert alert-info">
+                    <div className="alert ">
                       <div>
                         <h3 className="font-bold">Email Marketing Tips</h3>
                         <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
@@ -868,7 +868,7 @@ export default function ContentStudio() {
                   </div>
 
                   {!socialMediaData.loading && !socialMediaData.error && (
-                    <div className="alert alert-info mt-4">
+                    <div className="alert  mt-4">
                       <div>
                         <h3 className="font-bold">AI Format Optimization</h3>
                         <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
@@ -897,7 +897,7 @@ export default function ContentStudio() {
                         {videoData.preview}
                       </div>
                       {videoData.metadata && (
-                        <div className="alert alert-info mt-4">
+                        <div className="alert  mt-4">
                           <div>
                             <h3 className="font-bold">Script Details</h3>
                             <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
@@ -910,7 +910,7 @@ export default function ContentStudio() {
                       )}
                     </div>
                   ) : (
-                    <div className="alert alert-info">
+                    <div className="alert ">
                       <div>
                         <h3 className="font-bold">Video Script Tips</h3>
                         <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
@@ -959,7 +959,7 @@ export default function ContentStudio() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <div className="alert alert-info">
+                      <div className="alert ">
                         <div>
                           <h3 className="font-bold">Ad Optimization Tips</h3>
                           <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
@@ -1001,7 +1001,7 @@ export default function ContentStudio() {
                     </div>
                   )}
                   {adCreativeData.error && (
-                    <div className="alert alert-info mt-4">
+                    <div className="alert  mt-4">
                       <div className="flex-1">
                         <label>{adCreativeData.error}</label>
                       </div>
@@ -1058,7 +1058,7 @@ export default function ContentStudio() {
       <div className="card bg-base-100 shadow-lg">
         <div className="card-body">
           <h2 className="card-title">AI Writing Assistant</h2>
-          <div className="alert alert-info">
+          <div className="alert ">
             <div>
               <h3 className="font-bold">Writing Suggestions</h3>
               <ul className="list-disc list-inside mt-2 space-y-1">
